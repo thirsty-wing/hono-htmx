@@ -24,6 +24,7 @@ export function TableRows({
           users.length > supposedEndIdx; // is not the very last one
         return (
           <tr
+            class="hover"
             hx-get={
               shouldRequestNextPage &&
               `/users${tees.reduce((strRes, tee, index) => {

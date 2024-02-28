@@ -16,6 +16,12 @@ const app = new Hono();
 
 app.use("/static/global.css", serveStatic({ path: "./src/output.css" }));
 
+// TODO: serve and consume the gzipped version
+app.use(
+  "/static/htmx.js",
+  serveStatic({ path: "./node_modules/htmx.org/dist/htmx.min.js" })
+);
+
 app.get("/", (c) => {
   return c.redirect("/users");
 });
@@ -30,7 +36,7 @@ app.get("/users", async (c) => {
   const conditionalsList: string[] = [];
 
   if (q) {
-    conditionalsList.push(`username LIKE '%${q}%'`);
+    conditionalsList.push(`name LIKE '%${q}%'`);
   }
 
   if (tees.length > 0) {
@@ -43,13 +49,17 @@ app.get("/users", async (c) => {
     return result + (index === 0 ? "WHERE " : " AND ") + conditional;
   }, "");
 
-  const result = await pool.query(`
+  const query = `
   SELECT id, name, username, email, city, department, t_shirt_size
-  FROM USERS ${conditionals} OFFSET ${offset} LIMIT ${size}`);
+  FROM USERS ${conditionals} OFFSET ${offset} LIMIT ${size}`;
+
+  console.log(query);
+
+  const result = await pool.query(query);
 
   return c.html(
     <Layout title="Users">
-      <Users users={result.rows} tees={tees} />
+      <Users users={result.rows} q={q} tees={tees} />
     </Layout>
   );
 });
