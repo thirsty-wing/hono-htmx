@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
 import Layout from "./layout";
 import Users from "./users";
+import TableRows from "./tableRows";
 import { Pool } from "pg";
 
 const pool = new Pool({
@@ -27,11 +28,17 @@ app.get("/", (c) => {
 });
 
 app.get("/users", async (c) => {
-  const q = c.req.query("q");
-  const tees = c.req.queries("tees[]") ?? [];
-  const offset = c.req.query("offset") ?? 0;
-  const size = c.req.query("size") ?? 30;
   const hxTrigger = c.req.header("hx-trigger");
+  const hxRequest = c.req.header("hx-request");
+  const q = c.req.query("q");
+  const tees = c.req.queries("tees") ?? [];
+  const size = parseInt(c.req.query("size") ?? "30");
+
+  let offset;
+
+  if (hxRequest && hxTrigger !== "filters" && hxTrigger !== "searchform") {
+    offset = parseInt(c.req.query("offset") ?? "0");
+  }
 
   const conditionalsList: string[] = [];
 
@@ -45,21 +52,38 @@ app.get("/users", async (c) => {
     );
   }
 
-  const conditionals = conditionalsList.reduce((result, conditional, index) => {
-    return result + (index === 0 ? "WHERE " : " AND ") + conditional;
-  }, "");
+  const offsetPart = offset ? `OFFSET ${offset}` : "";
+
+  const conditionalsPart = conditionalsList.reduce(
+    (result, conditional, index) => {
+      return result + (index === 0 ? "WHERE " : " AND ") + conditional;
+    },
+    ""
+  );
 
   const query = `
   SELECT id, name, username, email, city, department, t_shirt_size
-  FROM USERS ${conditionals} OFFSET ${offset} LIMIT ${size}`;
+  FROM USERS ${conditionalsPart} ${offsetPart} LIMIT ${size}`;
 
   console.log(query);
 
   const result = await pool.query(query);
 
+  if (hxRequest && hxTrigger !== "filters" && hxTrigger !== "searchform") {
+    return c.html(
+      <TableRows users={result.rows} offset={offset} size={size} tees={tees} />
+    );
+  }
+
   return c.html(
     <Layout title="Users">
-      <Users users={result.rows} q={q} tees={tees} />
+      <Users
+        users={result.rows}
+        q={q}
+        tees={tees}
+        size={size}
+        offset={offset}
+      />
     </Layout>
   );
 });

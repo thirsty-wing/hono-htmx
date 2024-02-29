@@ -1,44 +1,47 @@
 export function TableRows({
-  page = 0,
+  offset = 0,
   size = 30,
   q = "",
   tees,
   users,
 }: {
-  page?: number;
+  offset?: number;
   size?: number;
   q?: string;
   tees: Array<string>;
   users: Array<any>;
 }) {
-  const supposedStartIdx = page * size;
-  const supposedEndIdx = supposedStartIdx + size;
-
-  //const usersResults = await getUsers({ size, index: supposedStartIdx });
-
   return (
     <>
       {users.map((user, sliceIdx) => {
-        const shouldRequestNextPage =
-          supposedStartIdx + sliceIdx === supposedEndIdx - 1 && // is last in page
-          users.length > supposedEndIdx; // is not the very last one
+        const supposedEndIdx = offset + size;
+        const shouldRequestNextPage = offset + sliceIdx === supposedEndIdx - 1; // is last in page
+        console.log(
+          "offset + sliceIdx:",
+          offset + sliceIdx,
+          "supposedEndIdx - 1:",
+          supposedEndIdx - 1
+        );
         return (
           <tr
             class="hover"
             hx-get={
               shouldRequestNextPage &&
-              `/users${tees.reduce((strRes, tee, index) => {
-                return strRes + (index === 0 ? "?" : "&") + "tees[]=" + tee;
-              }, "")}`
+              `/users?offset=${offset + size}&size=${size}&q=${q}&${tees.reduce(
+                (strRes, tee, index) => {
+                  return strRes + (index === 0 ? "" : "&") + "tees=" + tee;
+                },
+                ""
+              )}`
             }
             hx-trigger={shouldRequestNextPage && "intersect once"}
             hx-swap={shouldRequestNextPage && "afterend"}
           >
-            <th>
+            <td>
               <a class="link" href={`/users/${user.id}`}>
                 {user.name}
               </a>
-            </th>
+            </td>
             <td>{user.email}</td>
             <td>{user.city}</td>
             <td>{user.department}</td>

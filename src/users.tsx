@@ -1,10 +1,14 @@
 import TableRows from "./tableRows";
 
 export function Users({
+  offset = 0,
+  size = 0,
   users,
   q = "",
   tees,
 }: {
+  offset?: number;
+  size?: number;
   users: Array<any>;
   q?: string;
   tees: Array<string>;
@@ -30,16 +34,16 @@ export function Users({
             hx-replace-url="true"
             hx-swap="innerHTML scroll:#table-container:top"
             hx-target="#table-body"
-            //hx-vals={`{{checkboxQueryParams.join(", ")}}`}
+            hx-vals={`{${tees.map((tee) => `tees=${tee}`).join(", ")}}`}
             hx-trigger="input changed delay:500ms"
           />
-          <fieldset>
+          <fieldset class="flex justify-content-center">
             <legend>Choose tee shirt size filter:</legend>
             <input
               class="checkbox"
               checked={tees.includes("xs")}
               id="xs-tee-checkbox"
-              name="tees[]"
+              name="tees"
               type="checkbox"
               value="xs"
             />
@@ -48,7 +52,7 @@ export function Users({
               class="checkbox"
               checked={tees.includes("s")}
               id="s-tee-checkbox"
-              name="tees[]"
+              name="tees"
               type="checkbox"
               value="s"
             />
@@ -57,7 +61,7 @@ export function Users({
               class="checkbox"
               checked={tees.includes("m")}
               id="m-tee-checkbox"
-              name="tees[]"
+              name="tees"
               type="checkbox"
               value="m"
             />
@@ -66,7 +70,7 @@ export function Users({
               class="checkbox"
               checked={tees.includes("l")}
               id="l-tee-checkbox"
-              name="tees[]"
+              name="tees"
               type="checkbox"
               value="l"
             />
@@ -75,7 +79,7 @@ export function Users({
               class="checkbox"
               checked={tees.includes("xl")}
               id="xl-tee-checkbox"
-              name="tees[]"
+              name="tees"
               type="checkbox"
               value="xl"
             />
@@ -84,7 +88,7 @@ export function Users({
               class="checkbox"
               checked={tees.includes("2xl")}
               id="2xl-tee-checkbox"
-              name="tees[]"
+              name="tees"
               type="checkbox"
               value="2xl"
             />
@@ -93,7 +97,7 @@ export function Users({
               class="checkbox"
               checked={tees.includes("3xl")}
               id="3xl-tee-checkbox"
-              name="tees[]"
+              name="tees"
               type="checkbox"
               value="3xl"
             />
@@ -113,7 +117,13 @@ export function Users({
               </tr>
             </thead>
             <tbody id="table-body" class="overflow-auto">
-              <TableRows users={users} q={q} tees={tees} />
+              <TableRows
+                offset={offset}
+                size={size}
+                users={users}
+                q={q}
+                tees={tees}
+              />
             </tbody>
           </table>
         </div>
