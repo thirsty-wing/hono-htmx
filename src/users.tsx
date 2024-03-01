@@ -14,15 +14,15 @@ export function Users({
   tees: Array<string>;
 }) {
   return (
-    <main class="flex gap-24 flex-1">
-      <aside style="border-right: solid gray; width: 100px;">
+    <main class="flex gap-24 flex-1 h-screen">
+      <aside class="border-solid border-gray-500 border-r-2 w-100 p-8">
         <nav>
           <ul>
             <a href="/users">Users</a>
           </ul>
         </nav>
       </aside>
-      <div class="flex flex-col">
+      <div class="flex flex-col p-8">
         <form action="/users" id="filters" hx-replace-url="true">
           <input
             class="input input-bordered"
@@ -101,13 +101,13 @@ export function Users({
               type="checkbox"
               value="3xl"
             />
-            <label for="xxxltee">3XL</label>
+            <label for="3xl-tee-checkbox">3XL</label>
           </fieldset>
           <input class="btn" type="submit" value="Apply Filters" />
         </form>
-        <div class="flex overflow-auto" id="table-container">
+        <div class="flex overflow-auto pb-8" id="table-container">
           <table class="table table-fixed">
-            <thead class="sticky top-0">
+            <thead class="sticky top-0 bg-black">
               <tr>
                 <th>Full Name</th>
                 <th>Email</th>
@@ -116,7 +116,7 @@ export function Users({
                 <th>Shirt Size</th>
               </tr>
             </thead>
-            <tbody id="table-body" class="overflow-auto">
+            <tbody id="table-body">
               <TableRows
                 offset={offset}
                 size={size}

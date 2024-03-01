@@ -63,7 +63,7 @@ app.get("/users", async (c) => {
 
   const query = `
   SELECT id, name, username, email, city, department, t_shirt_size
-  FROM USERS ${conditionalsPart} ${offsetPart} LIMIT ${size}`;
+  FROM users ${conditionalsPart} ${offsetPart} LIMIT ${size}`;
 
   console.log(query);
 

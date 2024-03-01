@@ -1,14 +1,15 @@
 {
   "scripts": {
-    "dev": "bun run --hot src/index.tsx"
+    "dev": "bun run --hot src/index.tsx",
+    "css": "tailwindcss -i ./src/input.css -o ./src/output.css --watch"
   },
   "dependencies": {
-    "@faker-js/faker": "8.4.1",
     "hono": "4.0.7",
     "htmx.org": "1.9.10",
     "pg": "8.11.3"
   },
   "devDependencies": {
+    "@faker-js/faker": "8.4.1",
     "@types/bun": "1.0.8",
     "@types/pg": "8.11.2",
     "daisyui": "4.7.2",
