@@ -107,7 +107,7 @@ export function Users({
         </form>
         <div class="flex overflow-auto pb-8" id="table-container">
           <table class="table table-fixed">
-            <thead class="sticky top-0 bg-black">
+            <thead class="sticky top-0 light:bg-gray-300 dark:bg-gray-800">
               <tr>
                 <th>Full Name</th>
                 <th>Email</th>
