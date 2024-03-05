@@ -1,4 +1,5 @@
 import TableRows from "./tableRows";
+import { Tees } from "./types/users";
 
 export function Users({
   offset = 0,
@@ -11,7 +12,7 @@ export function Users({
   size?: number;
   users: Array<any>;
   q?: string;
-  tees: Array<string>;
+  tees: Tees;
 }) {
   return (
     <main class="flex gap-24 flex-1 h-screen">
@@ -34,74 +35,79 @@ export function Users({
             hx-replace-url="true"
             hx-swap="innerHTML scroll:#table-container:top"
             hx-target="#table-body"
-            hx-vals={`{${tees.map((tee) => `tees=${tee}`).join(", ")}}`}
+            hx-vals={tees}
             hx-trigger="input changed delay:500ms"
           />
-          <fieldset class="flex justify-content-center">
+          <fieldset class="flex justify-content-center gap-1">
             <legend>Choose tee shirt size filter:</legend>
-            <input
-              class="checkbox"
-              checked={tees.includes("xs")}
-              id="xs-tee-checkbox"
-              name="tees"
-              type="checkbox"
-              value="xs"
-            />
-            <label for="xs-tee-checkbox">XS</label>
-            <input
-              class="checkbox"
-              checked={tees.includes("s")}
-              id="s-tee-checkbox"
-              name="tees"
-              type="checkbox"
-              value="s"
-            />
-            <label for="s-tee-checkbox">S</label>
-            <input
-              class="checkbox"
-              checked={tees.includes("m")}
-              id="m-tee-checkbox"
-              name="tees"
-              type="checkbox"
-              value="m"
-            />
-            <label for="m-tee-checkbox">M</label>
-            <input
-              class="checkbox"
-              checked={tees.includes("l")}
-              id="l-tee-checkbox"
-              name="tees"
-              type="checkbox"
-              value="l"
-            />
-            <label for="l-tee-checkbox">L</label>
-            <input
-              class="checkbox"
-              checked={tees.includes("xl")}
-              id="xl-tee-checkbox"
-              name="tees"
-              type="checkbox"
-              value="xl"
-            />
-            <label for="xl-tee-checkbox">XL</label>
-            <input
-              class="checkbox"
-              checked={tees.includes("2xl")}
-              id="2xl-tee-checkbox"
-              name="tees"
-              type="checkbox"
-              value="2xl"
-            />
-            <label for="2xl-tee-checkbox">2XL</label>
-            <input
-              class="checkbox"
-              checked={tees.includes("3xl")}
-              id="3xl-tee-checkbox"
-              name="tees"
-              type="checkbox"
-              value="3xl"
-            />
-            <label for="3xl-tee-checkbox">3XL</label>
+            <label class="flex justify-content-center">
+              <input
+                class="checkbox"
+                checked={!!tees.xs}
+                name="xs"
+                type="checkbox"
+              />
+              XS
+            </label>
+            <label class="flex justify-content-center">
+              <input
+                class="checkbox"
+                checked={!!tees.s}
+                name="s"
+                type="checkbox"
+              />
+              S
+            </label>
+            <label class="flex justify-content-center">
+              <input
+                class="checkbox"
+                checked={!!tees.m}
+                id="m-tee-checkbox"
+                name="m"
+                type="checkbox"
+              />
+              M
+            </label>
+            <label class="flex justify-content-center">
+              <input
+                class="checkbox"
+                checked={!!tees.l}
+                id="l-tee-checkbox"
+                name="l"
+                type="checkbox"
+              />
+              L
+            </label>
+            <label class="flex justify-content-center">
+              <input
+                class="checkbox"
+                checked={!!tees.xl}
+                id="xl-tee-checkbox"
+                name="xl"
+                type="checkbox"
+              />
+              XL
+            </label>
+            <label class="flex justify-content-center">
+              <input
+                class="checkbox"
+                checked={!!tees["2xl"]}
+                id="2xl-tee-checkbox"
+                name="2xl"
+                type="checkbox"
+              />
+              2XL
+            </label>
+            <label class="flex justify-content-center">
+              <input
+                class="checkbox"
+                checked={!!tees["3xl"]}
+                id="3xl-tee-checkbox"
+                name="3xl"
+                type="checkbox"
+              />
+              3XL
+            </label>
           </fieldset>
           <input class="btn" type="submit" value="Apply Filters" />
         </form>

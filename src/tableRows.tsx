@@ -1,3 +1,5 @@
+import { Tees } from "./types/users";
+
 export function TableRows({
   offset = 0,
   size = 30,
@@ -8,9 +10,23 @@ export function TableRows({
   offset?: number;
   size?: number;
   q?: string;
-  tees: Array<string>;
+  tees: Tees;
   users: Array<any>;
 }) {
+  const queryParams: Array<string> = [
+    `offset=${offset + size}`,
+    `size=${size}`,
+    `q=${q}`,
+  ];
+
+  Object.keys(tees).forEach((key) => {
+    if (!tees[key as keyof Tees]) {
+      return;
+    }
+
+    queryParams.push(`${key}=${tees[key as keyof Tees]}`);
+  });
+
   return (
     <>
       {users.map((user, sliceIdx) => {
@@ -25,15 +41,7 @@ export function TableRows({
         return (
           <tr
             class="hover"
-            hx-get={
-              shouldRequestNextPage &&
-              `/users?offset=${offset + size}&size=${size}&q=${q}&${tees.reduce(
-                (strRes, tee, index) => {
-                  return strRes + (index === 0 ? "" : "&") + "tees=" + tee;
-                },
-                ""
-              )}`
-            }
+            hx-get={shouldRequestNextPage && `/users?${queryParams.join("&")}`}
             hx-trigger={shouldRequestNextPage && "intersect once"}
             hx-swap={shouldRequestNextPage && "afterend"}
           >

@@ -4,6 +4,7 @@ import Layout from "./layout";
 import Users from "./users";
 import TableRows from "./tableRows";
 import { Pool } from "pg";
+import { Tees } from "./types/users";
 
 const pool = new Pool({
   user: "myuser",
@@ -31,8 +32,17 @@ app.get("/users", async (c) => {
   const hxTrigger = c.req.header("hx-trigger");
   const hxRequest = c.req.header("hx-request");
   const q = c.req.query("q");
-  const tees = c.req.queries("tees") ?? [];
   const size = parseInt(c.req.query("size") ?? "30");
+
+  const tees: Tees = {
+    xs: c.req.query("xs"),
+    s: c.req.query("s"),
+    m: c.req.query("m"),
+    l: c.req.query("l"),
+    xl: c.req.query("xl"),
+    "2xl": c.req.query("2xl"),
+    "3xl": c.req.query("3xl"),
+  };
 
   let offset;
 
@@ -46,10 +56,18 @@ app.get("/users", async (c) => {
     conditionalsList.push(`name LIKE '%${q}%'`);
   }
 
-  if (tees.length > 0) {
-    conditionalsList.push(
-      "( " + tees.map((tee) => `t_shirt_size = '${tee}'`).join(" OR ") + " )"
-    );
+  const teeConditionals: Array<string> = [];
+
+  Object.keys(tees).forEach((key) => {
+    if (!tees[key as keyof Tees]) {
+      return;
+    }
+
+    teeConditionals.push(`t_shirt_size = '${key}'`);
+  });
+
+  if (teeConditionals.length > 0) {
+    conditionalsList.push(`( ${teeConditionals.join(" OR ")} )`);
   }
 
   const offsetPart = offset ? `OFFSET ${offset}` : "";
