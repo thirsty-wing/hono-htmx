@@ -6,7 +6,11 @@ interface UserProps {
 
 function User({ user }: UserProps) {
   return (
-    <div hx-target="this" hx-swap="outerHTML">
+    <div
+      class="flex flex-col items-start gap-3"
+      hx-target="this"
+      hx-swap="outerHTML"
+    >
       <h1>Name {user.name}</h1>
       <h2>email: {user.email}</h2>
       <h2>city: {user.city}</h2>

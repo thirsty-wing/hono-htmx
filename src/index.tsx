@@ -117,11 +117,10 @@ app.get("/users/:id", async (c) => {
   if (c.req.header("hx-trigger") === "edit") {
     return c.html(
       <form
-        action="#"
         class="flex flex-col gap-3"
         hx-target="this"
         hx-swap="outerHTML"
-        method="post"
+        hx-put="#"
       >
         <label>
           Name <input name="name" value={user.name} />
@@ -139,9 +138,10 @@ app.get("/users/:id", async (c) => {
           T-shirt size: <input name="t_shirt_size" value={user.t_shirt_size} />
         </label>
         <div class="flex flex-row gap-3">
-          <input class="btn btn-primary" type="submit" id="edit">
-            Submit
-          </input>
+          <button class="btn btn-primary">Submit</button>
+          <button class="btn" hx-get={`/users/${user.id}`}>
+            Cancel
+          </button>
         </div>
       </form>
     );
@@ -154,7 +154,7 @@ app.get("/users/:id", async (c) => {
   );
 });
 
-app.post("/users/:id", async (c) => {
+app.put("/users/:id", async (c) => {
   const id = c.req.param("id");
 
   console.log("doing the post");
@@ -173,7 +173,17 @@ app.post("/users/:id", async (c) => {
 
   await pool.query(query);
 
-  return c.redirect(`/users/${id}`);
+  const querySelect = `
+  SELECT id, name, username, email, city, department, t_shirt_size
+  FROM users WHERE id = '${id}'`;
+
+  const user: User = (await pool.query(querySelect)).rows[0];
+
+  return c.html(
+    <Layout>
+      <UserUI user={user} />
+    </Layout>
+  );
 });
 
 export default app;
