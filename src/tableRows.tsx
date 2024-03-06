@@ -32,12 +32,7 @@ export function TableRows({
       {users.map((user, sliceIdx) => {
         const supposedEndIdx = offset + size;
         const shouldRequestNextPage = offset + sliceIdx === supposedEndIdx - 1; // is last in page
-        console.log(
-          "offset + sliceIdx:",
-          offset + sliceIdx,
-          "supposedEndIdx - 1:",
-          supposedEndIdx - 1
-        );
+
         return (
           <tr
             class="hover"

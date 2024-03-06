@@ -109,7 +109,7 @@ export function Users({
               3XL
             </label>
           </fieldset>
-          <input class="btn" type="submit" value="Apply Filters" />
+          <input class="btn btn-primary" type="submit" value="Apply Filters" />
         </form>
         <div class="flex pb-8 overflow-auto" id="table-container">
           <table class="table table-fixed">

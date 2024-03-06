@@ -83,8 +83,6 @@ app.get("/users", async (c) => {
   SELECT id, name, username, email, city, department, t_shirt_size
   FROM users ${conditionalsPart} ${offsetPart} LIMIT ${size}`;
 
-  console.log(query);
-
   const result = await pool.query(query);
 
   if (hxRequest && hxTrigger !== "filters" && hxTrigger !== "searchform") {
