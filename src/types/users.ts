@@ -7,3 +7,13 @@ export interface Tees {
   "2xl"?: string;
   "3xl"?: string;
 }
+
+export interface User {
+  id: string;
+  name: string;
+  department: string;
+  username: string;
+  email: string;
+  city: string;
+  t_shirt_size: string;
+}

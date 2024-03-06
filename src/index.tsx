@@ -2,9 +2,10 @@ import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
 import Layout from "./layout";
 import Users from "./users";
+import UserUI from "./user";
 import TableRows from "./tableRows";
 import { Pool } from "pg";
-import { Tees } from "./types/users";
+import { Tees, User } from "./types/users";
 
 const pool = new Pool({
   user: "myuser",
@@ -104,14 +105,75 @@ app.get("/users", async (c) => {
   );
 });
 
-app.get("/users/:id", (c) => {
+app.get("/users/:id", async (c) => {
   const id = c.req.param("id");
+
+  const query = `
+  SELECT id, name, username, email, city, department, t_shirt_size
+  FROM users WHERE id = '${id}'`;
+
+  const user: User = (await pool.query(query)).rows[0];
+
+  if (c.req.header("hx-trigger") === "edit") {
+    return c.html(
+      <form
+        action="#"
+        class="flex flex-col gap-3"
+        hx-target="this"
+        hx-swap="outerHTML"
+        method="post"
+      >
+        <label>
+          Name <input name="name" value={user.name} />
+        </label>
+        <label>
+          email: <input name="email" value={user.email} />
+        </label>
+        <label>
+          city: <input name="city" value={user.city} />
+        </label>
+        <label>
+          department: <input name="department" value={user.department} />
+        </label>
+        <label>
+          T-shirt size: <input name="t_shirt_size" value={user.t_shirt_size} />
+        </label>
+        <div class="flex flex-row gap-3">
+          <input class="btn btn-primary" type="submit" id="edit">
+            Submit
+          </input>
+        </div>
+      </form>
+    );
+  }
 
   return c.html(
     <Layout>
-      <h1>I am user {id}</h1>
+      <UserUI user={user} />
     </Layout>
   );
+});
+
+app.post("/users/:id", async (c) => {
+  const id = c.req.param("id");
+
+  console.log("doing the post");
+
+  const body = await c.req.parseBody();
+
+  const query = `
+  UPDATE users SET
+  name = '${body.name}',
+  username = '${body.username}',
+  email = '${body.email}',
+  city = '${body.city}',
+  department = '${body.department}',
+  t_shirt_size = '${body.t_shirt_size}'
+  WHERE id = '${id}'`;
+
+  await pool.query(query);
+
+  return c.redirect(`/users/${id}`);
 });
 
 export default app;
