@@ -4,6 +4,7 @@
     "css": "tailwindcss -i ./src/input.css -o ./src/output.css --watch"
   },
   "dependencies": {
+    "bun-compression": "0.0.4",
     "hono": "4.0.7",
     "htmx.org": "1.9.10",
     "pg": "8.11.3"

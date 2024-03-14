@@ -6,6 +6,7 @@ import UserUI from "./user";
 import TableRows from "./tableRows";
 import { Pool } from "pg";
 import { Tees, User } from "./types/users";
+import { compress } from "bun-compression";
 
 const pool = new Pool({
   user: "myuser",
@@ -16,6 +17,8 @@ const pool = new Pool({
 });
 
 const app = new Hono();
+
+app.use(compress());
 
 app.use("/static/global.css", serveStatic({ path: "./src/output.css" }));
 
